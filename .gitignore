@@ -1,0 +1,11 @@
+skills/
+node_modules/
+__pycache__/
+*.pyc
+src/.flet/
+build/
+upload-keystore.jks
+*.db
+mp_*.db
+.env
+keystore.jks

@@ -1,0 +1,28 @@
+[project]
+name = "maxpoint-plus"
+version = "0.10.0"
+description = "MAXPOINT-Plus v0.10"
+requires-python = ">=3.12"
+dependencies = [
+    "flet>=0.86.0",
+    "flet-secure-storage",
+    "flet-charts",
+    "httpx",
+    "tzdata",
+]
+
+[tool.flet]
+product = "MAXPOINT-Plus"
+org = "com.maxpoint.plus"
+bundle_id = "com.maxpoint.plus"
+build_number = 8
+icon = "src/assets/icons/app_icon.png"
+
+[tool.flet.app]
+path = "src"
+
+[tool.flet.android.permission]
+"android.permission.POST_NOTIFICATIONS" = true
+"android.permission.INTERNET" = true
+"android.permission.SCHEDULE_EXACT_ALARM" = true
+"android.permission.RECEIVE_BOOT_COMPLETED" = true

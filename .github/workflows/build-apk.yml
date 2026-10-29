@@ -1,0 +1,59 @@
+name: Build MAXPOINT-Plus Release APK
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Flet
+        run: |
+          python -m pip install --upgrade pip
+          pip install 'flet[all]'
+
+      - name: Generate temporary keystore
+        run: |
+          keytool -genkey -v -keystore keystore.jks \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -alias maxpointplus -storepass maxpoint123 -keypass maxpoint123 \
+            -dname 'CN=MAXPOINT-PLUS, OU=Personal, O=Personal, L=NA, S=NA, C=IR'
+
+      - name: Build Release APK (with keystore copy hack)
+        env:
+          FLET_ANDROID_SIGNING_KEY_STORE_PASSWORD: maxpoint123
+        run: |
+          flet build apk \
+            --yes \
+            --module-name main \
+            --android-signing-key-store keystore.jks \
+            --android-signing-key-alias maxpointplus \
+            --split-per-abi &
+          
+          FLET_PID=$!
+          
+          while kill -0 $FLET_PID 2>/dev/null; do
+            mkdir -p build/flutter/android/app
+            cp keystore.jks build/flutter/android/app/keystore.jks 2>/dev/null || true
+            sleep 1
+          done
+          
+          wait $FLET_PID
+          exit $?
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: maxpoint-plus-v11-apk
+          path: build/**/*.apk
+          if-no-files-found: error

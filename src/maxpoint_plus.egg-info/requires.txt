@@ -1,0 +1,5 @@
+flet>=0.86.0
+flet-secure-storage
+flet-charts
+httpx
+tzdata
