@@ -49,7 +49,7 @@ def build(ctx) -> ft.Control:
             ctx.snack(str(exc))
 
     date_field.on_submit = _show_date
-    return ft.ListView(
+    return ft.ListView(bgcolor=ft.Colors.TRANSPARENT, 
         [
             ft.Container(height=4),
             section_title("ثبت سریع"),
